@@ -1,0 +1,15 @@
+{% extends "ka/base.html" %}
+
+{% block content %}
+    <p>Keywords found:</p>
+    {% if keywords_list %}
+        {% for k in keywords_list.split %}
+            {{ k }}<br>
+        {% endfor %}
+
+    {% else %}
+        <p>No keywords found</p>
+    {% endif %}
+
+    
+{% endblock %}
