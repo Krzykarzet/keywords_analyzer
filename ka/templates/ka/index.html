@@ -1,0 +1,12 @@
+{% extends "ka/base.html" %}
+
+{% block content %}
+    Enter url
+
+    <form method="post" action="{% url 'ka:results' %}">
+    {% csrf_token %}
+        <input type="text" name="website_url">
+        <input type="submit" value="Search">
+    </form>
+
+{% endblock %}
