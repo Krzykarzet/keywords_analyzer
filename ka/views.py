@@ -1,5 +1,5 @@
 from typing import List
-
+from .classes import Website
 from django.shortcuts import render
 from . import engine as e
 from django.views.decorators.http import require_POST
@@ -41,3 +41,12 @@ def results(request):
     # context = {**context,  **{'text': all_text}}
 
     return render(request, 'ka/results.html', context)
+
+
+@require_POST
+def cresults(request):
+    context = {}
+
+    w = Website(request.POST["website_url2"])
+
+    return render(request, 'ka/cresults.html', context)
