@@ -4,6 +4,7 @@ from contextlib import closing
 from bs4 import BeautifulSoup
 import builtwith
 import urllib3
+import re
 
 
 def simple_get(url):
@@ -46,3 +47,38 @@ def find_keywords(content):
             ret_val += tag.get("content", None)
 
     return ret_val
+
+
+def get_all_text(content):
+    soup = BeautifulSoup(content, 'html.parser')
+    return soup.text
+
+
+def find_words(content):
+    soup = BeautifulSoup(content, 'html.parser')
+    text_p = (''.join(s.findAll(text=True))for s in soup.findAll('p'))
+
+    return text_p
+
+
+def clean_wordlist(w_list):
+    clean_w_list = []
+
+    for word in w_list:
+        w = "".join(re.findall("[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ]+", word))
+        if len(w) > 0:
+            clean_w_list.append(w)
+
+    return clean_w_list
+
+
+def create_words_dict(words_list):
+    word_count = {}
+
+    for w in words_list:
+        if w in word_count:
+            word_count[w] += 1
+        else:
+            word_count[w] = 1
+
+    return word_count
