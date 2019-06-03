@@ -1,9 +1,15 @@
 {% extends "ka/base.html" %}
 
 {% block content %}
-    <p>Keywords found:</p>
+
+
+    {% if errors %}
+    {{ errors.upper }}
+    {% else %}
+    <p>Keyword report of:  <a href="{{ url }}">{{ url }}</a> </p>
     {% if keywords_list %}
-        {% for k in keywords_list.split %}
+        <p>Keywords found:</p>
+        {% for k in keywords_list %}
             {{ k }}<br>
         {% endfor %}
 
@@ -11,6 +17,16 @@
         <p>No keywords found</p>
     {% endif %}
 <br>
-    {{ text }}
+{#    {{ text }}#}
+
+    {% if keywords_count %}
+        <p>Keywords statiscics:</p>
+    {% for key, value in keywords_count.items %}
+        {{ key }} - {{ value }}<br>
+    {% endfor %}
+    {% else %}
+
+    {% endif %}
+    {% endif %}
     
 {% endblock %}
