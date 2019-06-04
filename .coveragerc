@@ -1,0 +1,8 @@
+[run]
+source = ka, keywords_analyzer
+
+[report]
+omit =
+    ka/tests.py
+    keywords_analyzer/wsgi.py
+    venv/

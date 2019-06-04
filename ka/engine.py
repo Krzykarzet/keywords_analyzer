@@ -17,7 +17,7 @@ def simple_get(url):
             if is_good_response(resp):
                 result = resp.content
     except RequestException as e:
-        log_error(e)
+        logger.error(e)
 
     return result
 
@@ -25,39 +25,32 @@ def simple_get(url):
 def is_good_response(resp):
     """Check if response is in correct format and is ok"""
     content_type = resp.headers['Content-Type'].lower()
-    return (resp.status_code == 200 and content_type is not None
-            and content_type.find('html') > -1)
-
-
-def log_error(e):
-    logger.error(e)
+    return (
+        resp.status_code == 200
+        and content_type is not None
+        and content_type.find('html') > -1
+    )
 
 
 def add_prefix(url):
     """check if url has http or https prefix and returns full url"""
-    if url[0:7].lower() != "http://" and url[0:8].lower() != "https://":
+    url = url.lower()
+    if not (url.startswith("http://") and url.startswith("https://")):
         url = f"http://{url}"
     return url
 
 
 def find_keywords(content):
-    """Find """
-    ret_val = ""
+    """Find keywords in meta section and return string"""
+    result = ""
     soup = BeautifulSoup(content, 'html.parser')
 
     for tag in soup.find_all("meta"):
         name = tag.get("name", None)
         if name and name.lower() == "keywords":
-        # if tag.get("name", None) in ["keywords", "Keywords", "KEYWORDS"]:
-            ret_val += tag.get("content", None)
+            result += tag.get("content", None)
 
-    return ret_val
-
-
-def get_all_text(content):
-    """Get all text from website"""
-    soup = BeautifulSoup(content, 'html.parser')
-    return soup.text
+    return result
 
 
 def find_words(content):
@@ -100,12 +93,6 @@ def find_keywords_in_words(keywords, words):
 
     for kw in keywords:
         output[kw] = words[kw] if kw in words else 0
-
-    # for kw in keywords:
-    #     if kw in words:
-    #         output[kw] = words[kw]
-    #     else:
-    #         output[kw] = 0
 
     return output
 
