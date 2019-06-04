@@ -9,6 +9,7 @@ Click==7.0
 coverage==4.5.3
 Django==2.2.1
 future==0.17.1
+gunicorn==19.9.0
 idna==2.8
 lxml==4.3.3
 python-whois==0.7.1
