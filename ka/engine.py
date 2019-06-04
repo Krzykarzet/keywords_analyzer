@@ -1,23 +1,25 @@
+import re
+from contextlib import closing
+
+from bs4 import BeautifulSoup
 from requests import get
 from requests.exceptions import RequestException
-from contextlib import closing
-from bs4 import BeautifulSoup
-import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def simple_get(url):
     """Get website"""
+    result = None
     try:
         with closing(get(url, stream=True)) as resp:
             if is_good_response(resp):
-                ret_val = resp.content
-            else:
-                ret_val = None
+                result = resp.content
     except RequestException as e:
         log_error(e)
-        ret_val = None
 
-    return ret_val
+    return result
 
 
 def is_good_response(resp):
@@ -28,15 +30,14 @@ def is_good_response(resp):
 
 
 def log_error(e):
-    print(e)
+    logger.error(e)
 
 
 def add_prefix(url):
     """check if url has http or https prefix and returns full url"""
     if url[0:7].lower() != "http://" and url[0:8].lower() != "https://":
-        return "http://"+url
-    else:
-        return url
+        url = f"http://{url}"
+    return url
 
 
 def find_keywords(content):
@@ -45,7 +46,9 @@ def find_keywords(content):
     soup = BeautifulSoup(content, 'html.parser')
 
     for tag in soup.find_all("meta"):
-        if tag.get("name", None) in ["keywords", "Keywords", "KEYWORDS"]:
+        name = tag.get("name", None)
+        if name and name.lower() == "keywords":
+        # if tag.get("name", None) in ["keywords", "Keywords", "KEYWORDS"]:
             ret_val += tag.get("content", None)
 
     return ret_val
@@ -96,10 +99,13 @@ def find_keywords_in_words(keywords, words):
     output = {}
 
     for kw in keywords:
-        if kw in words:
-            output[kw] = words[kw]
-        else:
-            output[kw] = 0
+        output[kw] = words[kw] if kw in words else 0
+
+    # for kw in keywords:
+    #     if kw in words:
+    #         output[kw] = words[kw]
+    #     else:
+    #         output[kw] = 0
 
     return output
 

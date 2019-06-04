@@ -1,8 +1,9 @@
 from typing import List
 
 from django.shortcuts import render
-from . import engine as e
 from django.views.decorators.http import require_POST
+
+from . import engine
 
 
 def index(request):
@@ -11,33 +12,31 @@ def index(request):
 
 @require_POST
 def results(request):
-    url = e.add_prefix(request.POST["website_url"])
-    if e.simple_get(url):
-        content = e.simple_get(url)
-        keywords = e.find_keywords(content)
+    url = engine.add_prefix(request.POST["website_url"])
+    context = {'errors': 'wrong website'}
+    content = engine.simple_get(url)
+
+    if content:
+        # engine.simple_get(url):
+        # content = engine.simple_get(url)
+        keywords = engine.find_keywords(content)
         keywords_list = keywords.split(",")
 
-        raw_words = e.find_words(content)
-        words_list: List[List[str]] = []
+        raw_words = engine.find_words(content)
+        words_list = []
 
         for w in raw_words:
             word = w.lower().split()
-            word = e.clean_wordlist(word)
+            word = engine.clean_wordlist(word)
             if len(word) > 0:
                 words_list.append(word)
 
         words_list = [w for wl in words_list for w in wl]
 
-        words_dict = e.create_words_dict(words_list)
+        words_dict = engine.create_words_dict(words_list)
 
-        keywords_count = e.find_keywords_in_words(keywords_list, words_dict)
+        keywords_count = engine.find_keywords_in_words(keywords_list, words_dict)
 
         context = {'keywords_list': keywords_list, 'keywords_count': keywords_count, 'url': url}
-    else:
-        context = {'errors': 'wrong website'}
-
-    # all_text = e.get_all_text(e.simple_get(url))
-
-    # context = {**context,  **{'text': all_text}}
 
     return render(request, 'ka/results.html', context)
