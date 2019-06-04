@@ -49,4 +49,5 @@ def cresults(request):
 
     w = Website(request.POST["website_url2"])
 
+
     return render(request, 'ka/cresults.html', context)
