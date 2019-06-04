@@ -17,8 +17,6 @@ def results(request):
     content = engine.simple_get(url)
 
     if content:
-        # engine.simple_get(url):
-        # content = engine.simple_get(url)
         keywords = engine.find_keywords(content)
         keywords_list = keywords.split(",")
 

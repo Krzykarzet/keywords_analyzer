@@ -10,7 +10,7 @@
     {% if keywords_list %}
         <p>Keywords found:</p>
         {% for k in keywords_list %}
-            {{ k }}<br>
+            <ul><li>{{ k }}</li></ul>
         {% endfor %}
 
     {% else %}
@@ -22,7 +22,9 @@
     {% if keywords_count %}
         <p>Keywords statiscics:</p>
     {% for key, value in keywords_count.items %}
-        {{ key }} - {{ value }}<br>
+        <ul>
+        <li> {{ key }} - {{ value }}</li>
+        </ul>
     {% endfor %}
     {% else %}
 

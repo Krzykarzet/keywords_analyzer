@@ -35,7 +35,7 @@ def is_good_response(resp):
 def add_prefix(url):
     """check if url has http or https prefix and returns full url"""
     url = url.lower()
-    if not (url.startswith("http://") and url.startswith("https://")):
+    if not (url.startswith("http://") or url.startswith("https://")):
         url = f"http://{url}"
     return url
 
